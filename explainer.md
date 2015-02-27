@@ -9,7 +9,6 @@ In particular, web content that is treated by as a top-level app by an OS is sti
   - The ability for apps to understand that they've been installed
   - API surface area in Service Workers to direct navigation requests to applications and detect that some `Client` instances are launched in "app mode"
   - Control from Service Workers regarding requests that should be launched in "regular" tabs (e.g., how does an App decide which navigations are "outside" the app?)
-  - Ways for content to detect that it has been launched in such a mode (e.g., feature-detectable flag or media query)
   - Agreement between UAs about what combination of URL scopes, Service Worker registrations, and manifest locations constitute "an app"
   - Metadata about how to offer associated "native" apps to users
 
@@ -144,14 +143,44 @@ window.addEventListener("beforeinstallprompt", function(e) {
 });
 ```
 
-<!--
-### Understanding Launch Mode
-
-
-
 ### App Extent & Service Worker Interaction
 
--->
+Many application platforms provide for [intercepting a subset of URL navigations](https://developer.chrome.com/apps/manifest/url_handlers) or [system actions that lead to navigations](http://developer.android.com/guide/components/intents-filters.html). This has some overlap with [registering protocol handlers](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/registerProtocolHandler), but we can safely consider `http://` and `https://` to be unique.
+
+Web applications do not, today, contain a single view of what set of URLs specify them as an "app". One obvious option is to consider the set of URLs which a [Service Worker](http://www.html5rocks.com/en/tutorials/service-worker/introduction/) is responsible for handling to be "the app", but applications may want ways to suggest that they don't "own" the navigation and that it should be handled in the default way (e.g., loading a document in a tab instead of navigating inside an application window). Integration of Service Workers into Manifests is an un-yet [unresolved issue](https://github.com/w3c/manifest/issues/161), meaning the easiest answer ("just use whatever the registration in the manifest indicates") isn't sufficient either.
+
+We propose API to allow an app to dispose of inbound navigations in whatever way it sees fit:
+
+```js
+// https://example.com/sw.js
+onfetch = function(e) {
+  // Check to see if it's a request for end-user documentation
+  var requestUrl = new URL(request.url);
+  if (requestUrl.pathname.indexOf("/docs") == 0) {
+    // Send to a regular tab
+    e.default({ target: "_new" });
+  }
+  e.waitUntil(clients.matchAll({ type: "window" }).then(
+    function(windows) {
+      // Check to see if we've already got an open app window:
+      var window;
+      windows.forEach(function(w) {
+        if (w.url == e.request.url) {
+          window = w;
+        }
+      });
+      if (w) {
+        return w.focus();
+      } else {
+        // Straw-man syntax for setting a preferred display type
+        e.default({ display: "standalone" });
+      }
+    }
+  ));
+};
+```
+
+No affordance is provided for _outbound_ link mediation as, in general, this is the fast-path to creating violated user expectations and poor experiences (e.g., "in app browsers" that totally balls up TLS, etc.).
 
 ### Strawman: Non-App Control Surfaces
 
