@@ -82,7 +82,7 @@ We propose manifest extensions which enable the UA to decide which application t
     },
   ],
   "icons": [ {
-    "src": "images/touch/google-touch-icon-144x144.png",
+    "src": "images/icon-144x144.png",
     "sizes": "144x144",
     "type": "image/png",
     "density": "3.0"
@@ -208,7 +208,7 @@ The question arises: what if those UI surfaces could be populated by web applica
     },
   ],
   "icons": [ {
-    "src": "images/touch/google-touch-icon-144x144.png",
+    "src": "images/icon-144x144.png",
     "sizes": "144x144",
     "type": "image/png",
     "density": "3.0"
@@ -218,6 +218,41 @@ The question arises: what if those UI surfaces could be populated by web applica
 ```
 
 To be surfaced to users, the URLs in question must (of course) match the Service Worker scope for the application.
+
+### Brand Colors and Launch Icons
+
+Many application platforms provide the ability for an app to show some sort of startup screen. Web apps tend to be launched in tabs today -- either as new sub-processes which can be cheaply cloned or in-process -- in an environment where initial rendering can safely considered to be "cheap".
+
+Web apps that launch from the homescreen or start menu may not have such advantages. They may, perhaps, require startup of a browser and renderer process, initialization of GPU contexts, script context creation and application parsing, etc.
+
+Web applications that must pay the perceptual price for browser startup when the user taps on their icon are therefore at a UX disadvantage to their "native" counterparts because they cannot control what first gets painted in those initial milliseconds -- even if the content from which they will eventually render is entirely local (e.g., via Service Worker).
+
+Certain native platforms provide hooks for presenting [images](https://developer.apple.com/library/ios/documentation/UserExperience/Conceptual/MobileHIG/LaunchImages.html) or otherwise provide very-early launch control over paint. iOS has even extended the "launch image" concept [to the web](https://developer.apple.com/library/mac/documentation/AppleApplications/Reference/SafariWebContent/ConfiguringWebApplications/ConfiguringWebApplications.html).
+
+It is jarring to present a white (or default-color) screen on tap only to have the application draw a different full-screen `background-color` half a second later. To prevent this, we think it useful to allow the Manifest to declare optional colors and images to use at launch.
+
+There is precedent. Configuration is possible of the status-bar area of mobile OSes. iOS provides this capability to the web using the `[apple-mobile-web-app-status-bar-style](https://developer.apple.com/library/safari/documentation/AppleApplications/Reference/SafariHTMLRef/Articles/MetaTags.html)`. Proposals for `[theme-color](https://github.com/whatwg/meta-theme-color)`, `[brand-color](https://groups.google.com/a/chromium.org/d/msg/blink-dev/nzRY-h_-_ig/KR3XWn73tDoJ)` and `[msapplication-navbutton-color](https://msdn.microsoft.com/en-us/library/ie/gg491732%28v=vs.85%29.aspx)` indicate significant interest among vendors in providing at least some level of configurability in this area. Indeed, there is a [related issue open on the Manifest spec today](https://github.com/w3c/manifest/issues/225).
+
+We propose the following extensions:
+
+```json
+{
+  "name": "Google I/O 2015",
+  "short_name": "I/O 2015",
+  "start_url": "index.html",
+  "icons": [ {
+    "src": "images/icon-144x144.png",
+    "sizes": "144x144",
+    "type": "image/png",
+    "density": "3.0"
+  }],
+  "display": "standalone",
+  *"theme_color": "#db5945",
+  "start_image": "images/start-image.png"*
+}
+```
+
+This proposal assumes that the `"theme_color"` entry will be used to both configure initial full-bleed painting for the app as well as configure icon tray color. It is not yet clear to us if there is a desire to configure them independently. If there is, we might imagine a separate `"start_background_color"` property, although the name `"theme_color"` seems to alleviate this concern somewhat.
 
 <!--
 ### Strawman: App Install Criteria
