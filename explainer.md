@@ -233,7 +233,7 @@ It is jarring to present a white (or default-color) screen on tap only to have t
 
 There is precedent. Configuration is possible of the status-bar area of mobile OSes. iOS provides this capability to the web using the `[apple-mobile-web-app-status-bar-style](https://developer.apple.com/library/safari/documentation/AppleApplications/Reference/SafariHTMLRef/Articles/MetaTags.html)`. Proposals for `[theme-color](https://github.com/whatwg/meta-theme-color)`, `[brand-color](https://groups.google.com/a/chromium.org/d/msg/blink-dev/nzRY-h_-_ig/KR3XWn73tDoJ)` and `[msapplication-navbutton-color](https://msdn.microsoft.com/en-us/library/ie/gg491732%28v=vs.85%29.aspx)` indicate significant interest among vendors in providing at least some level of configurability in this area. Indeed, there is a [related issue open on the Manifest spec today](https://github.com/w3c/manifest/issues/225).
 
-We propose the following extensions:
+We propose `"theme_color"` and `"start_image"` extensions:
 
 ```json
 {
@@ -247,8 +247,8 @@ We propose the following extensions:
     "density": "3.0"
   }],
   "display": "standalone",
-  *"theme_color": "#db5945",
-  "start_image": "images/start-image.png"*
+  "theme_color": "#db5945",
+  "start_image": "images/start-image.png"
 }
 ```
 
