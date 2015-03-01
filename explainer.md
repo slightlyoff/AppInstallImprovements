@@ -67,18 +67,18 @@ We propose manifest extensions which enable the UA to decide which application t
   "related_applications": [
     {
       "platform": "android",
-      "location": <play store url>,
+      "id": <play store package name>,
     },
     {
       "platform" "ios",
-      "location": <ios store url>,
+      "id": <ios app id>,
     },
     {
       "platform": "web"
     },
     {
-      "location": ...,
-      "platform": ...
+      "platform": ...,
+      "id": ...
     },
   ],
   "icons": [ {
