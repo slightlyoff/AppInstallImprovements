@@ -254,7 +254,56 @@ We propose `"theme_color"` and `"start_image"` extensions:
 
 This proposal assumes that the `"theme_color"` entry will be used to both configure initial full-bleed painting for the app as well as configure icon tray color. It is not yet clear to us if there is a desire to configure them independently. If there is, we might imagine a separate `"start_background_color"` property, although the name `"theme_color"` seems to alleviate this concern somewhat.
 
-<!--
 ### Strawman: App Install Criteria
 
--->
+The Chrome team has identified a list of criteria that we equate with "appiness". As runtimes begin to allow and offer [installability for web applications](http://updates.html5rocks.com/2014/11/Support-for-installable-web-apps-with-webapp-manifest-in-chrome-38-for-Android), we have an interest in ensuring that users do not experience poor-quality sites in their "apps" list. Quality is subjective, but we're interested in a subset of quality criteria that can be automated and broadly communicated but which also correlate to maintained and modern, appy content.
+
+The following straw-man criteria seem to fit that bill:
+
+  - Served at a Secure Origin
+    - Functionally this means requiring TLS
+  - Registration of a Service Worker which
+    - Does not contain parse errors
+    - Controls at least the current document and the `start_url` of the manifest (see below)
+    - Registers a non-empty onfetch event handler
+  - The presence of a Web Manifest which includes at least the following fields
+    - `short_name` and `name`:
+      - The descriptive names to use for display, e.g. under a homescreen icon and hover text
+    - `icons`:
+      - A non-empty list with at least one icon in with enough density to look good on modern displays. For now that's at least one icon in PNG format that is at least 144x144px.
+    - `start_url`:
+      - The location to launch the app at if it isn't navigated to some other way. In essence, a "homescreen" location.
+    - `service_worker`:
+      - Optional if the installing site already has a Service Worker that matches both the installing page and `start_url`. A property bag that lists the location and scope of the Service Worker to use for the application.
+  - Responsive breakpoints & viewport meta tags
+    - The viewport declaration must be appropriate for mobile design, e.g.:
+      ```<meta name="viewport" content="width=device-width, initial-scale=1">```
+    - Responsive CSS breakpoints are the most at-risk criteria as it might not be appropriate, e.g., for games
+
+Runtimes may add additional criteria when deciding if and when to offer appy features (including offers of installation). For instance, Chrome will not prompt users to "keep" applications unless the user has visited multiple times in the past few weeks.
+
+Similarly, we can envision improving the quality of "app" detection by implementing a server or client-side analysis of Service Workers to determine to what extent applications will respond meaningfully offline, above and beyond the simple presences of an `onfetch` handler.
+
+#### The Rubric
+
+##### Secure Origins
+
+Good apps don't give your data to third parties without your knowledge. Our ability to trust your behavior as a full-screen application hinges on us already having some confidence that the removal of security indicators won't egregiously degrade the user experience.
+
+Chrome reserves the right to show URL-bar + security indicators should the security posture of the app degrade; e.g. through the use of Mixed Content on a site that was previously served over entirely secure connections.
+
+##### Service Workers
+
+It isn't an app if it doesn't start when you tap.
+
+That means all the time, which requires that the app at least boot up to an "offline" screen that's provided by the app and not the browser. Service Workers are the preferred way of providing offline functionality and are therefore required.
+
+##### Web Manifests
+
+We require enough metadata to ensure that we can provide meaningful UI to users who choose to install or "keep" the application in their top-level launcher UI surfaces.
+
+##### Responsive Breakpoints & Viewport
+
+The site must be making some effort to work well on mobile. Apps aren't good citizens unless they do the work to adapt to the viewport.
+
+Browsers bend over backwards to adapt to legacy content, but for content we wish to offer to users as "first class", there shouldn't be any tap-to-zoom required. The app should simply work well.
