@@ -105,7 +105,7 @@ The [Manifest format](https://w3c.github.io/manifest/) doesn't provide mechanism
 
 Understanding what (if any) API to provide related to prompting is complicated. For instance, Chrome 42 is going to show Web App install prompts when a conforming app is visited multiple times in the space of a few weeks and _never_ on the first visit to a site. Such criteria make explicit requesting API untennable.
 
-Having weighed the concerns about spammyness of APIs that would implicitly or explicitly force a prompt to appear for users, it seems the _most_ reasonable way for a site to know if it (or a related application) is being installed is for the system to inform it that such a prompt is being offered. An event in a document may be a reasonable way to model this:
+Having weighed the concerns about spammyness of APIs that would implicitly or explicitly force a prompt to appear for users, it seems the _most_ reasonable way for a site to know if it (or a related application) is eligible for installation is for the system to inform it that such a prompt is being offered. An event in a document may be a reasonable way to model this:
 
 ```js
 window.addEventListener("beforeinstallprompt", function(e) {
@@ -124,7 +124,9 @@ A user choosing to dismiss the prompt without installing is provided to the succ
   - `"installed"`: indicates that the installation process was successfully started
   - `"dismissed"`: indicates that the user dismissed the prompt, rejecting installation
 
-We further hope that such an API can evolve to handle _delaying_ display of a prompt -- for instance to avoid interrupting users at an inopportune point in a workflow. Such an "install later" capability can be modeled using the same event:
+The event and promise together allow websites to record important analytics such as click through and conversion rates.
+
+We further hope that such an API can evolve to handle _delaying_ display of a prompt -- for instance to avoid interrupting users at an inopportune point in a workflow or to allow sites to show in-page explanation of the feature before the prompt is displayed. Such an "install later" capability can be modeled using the same event:
 
 ```js
 var isTooSoon = true;
