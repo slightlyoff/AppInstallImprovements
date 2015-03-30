@@ -109,9 +109,10 @@ Having weighed the concerns about spammyness of APIs that would implicitly or ex
 
 ```js
 window.addEventListener("beforeinstallprompt", function(e) {
-  // log out the platform being prompted for
-  console.log(e.platform); // e.g., "web", "android", "windows", etc.
-  e.userChoice.then(function(outcome) {
+  // log the platforms provided as options in an install prompt
+  console.log(e.platforms); // e.g., ["web", "android", "windows"]
+  e.userChoice.then(function(outcome, platform) {
+    console.log(platform); // the platform of the app the user took an action on
     console.log(outcome); // either "installed", "dismissed", etc.
   }, handleError);
 });
