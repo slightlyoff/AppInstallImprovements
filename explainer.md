@@ -67,18 +67,18 @@ We propose manifest extensions which enable the UA to decide which application t
   "related_applications": [
     {
       "platform": "android",
-      "location": <play store url>,
+      "id": <play store package name>,
     },
     {
       "platform" "ios",
-      "location": <ios store url>,
+      "id": <ios app id>,
     },
     {
       "platform": "web"
     },
     {
-      "location": ...,
-      "platform": ...
+      "platform": ...,
+      "id": ...
     },
   ],
   "icons": [ {
@@ -91,7 +91,7 @@ We propose manifest extensions which enable the UA to decide which application t
 }
 ```
 
-If no `"related_applications"` list is provided and the site meets the installability criteria (see below), the web version can be assumed to be the preference. No `location` is required for `"web"` entry as the manifest itself can be considered to describe the web app and the `"start_url"` entry describes the Apps primary entrypoint.
+If no `"related_applications"` list is provided and the site meets the installability criteria (see below), the web version can be assumed to be the preference. No `id` is required for `"web"` entry as the manifest itself can be considered to describe the web app and the `"start_url"` entry describes the Apps primary entrypoint.
 
 In some instances, the web version might not be installable (e.g. because of system restrictions on the UA in creating the necessary UI and control surface area). Further, it's obvious that there will be instances where an iOS or Android application won't be available. To accommodate all of these situations, the list is ordered based on developer preference. If and `"android"` or `"iOS"` entry occurs before the `"web"` (or default `"web"`) entry and is appropriate for the UA to offer, an "install banner" might be shown, using the information provided in the manifest to bootstrap the offer process.
 
