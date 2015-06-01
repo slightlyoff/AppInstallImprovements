@@ -70,7 +70,7 @@ We propose manifest extensions which enable the UA to decide which application t
       "location": "<play store url>",
     },
     {
-      "platform" "ios",
+      "platform": "ios",
       "location": "<ios store url>",
     },
     {
