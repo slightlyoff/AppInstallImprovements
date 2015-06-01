@@ -67,18 +67,18 @@ We propose manifest extensions which enable the UA to decide which application t
   "related_applications": [
     {
       "platform": "android",
-      "location": <play store url>,
+      "location": "<play store url>",
     },
     {
       "platform" "ios",
-      "location": <ios store url>,
+      "location": "<ios store url>",
     },
     {
       "platform": "web"
     },
     {
-      "location": ...,
-      "platform": ...
+      "location": "...",
+      "platform": "..."
     },
   ],
   "icons": [ {
@@ -135,7 +135,7 @@ window.addEventListener("beforeinstallprompt", function(e) {
     // Prompt later instead:
     setTimeout(function() {
       isTooSoon = false;
-      window.dispatchEvent(e); // Shows prompt
+      e.prompt(); // Throws if called more than once or default not prevented
     }, 10000);
   }
 
