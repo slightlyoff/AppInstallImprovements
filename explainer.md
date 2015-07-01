@@ -274,6 +274,7 @@ The following straw-man criteria seem to fit that bill:
       - A non-empty list with at least one icon in with enough density to look good on modern displays. For now that's at least one icon in PNG format that is at least 144x144px.
     - `start_url`:
       - The location to launch the app at if it isn't navigated to some other way. In essence, a "homescreen" location.
+      - The `start_url` must be within the registration scope of the Service Worker for the application.
     - `service_worker`:
       - Optional if the installing site already has a Service Worker that matches both the installing page and `start_url`. A property bag that lists the location and scope of the Service Worker to use for the application.
   - Responsive breakpoints & viewport meta tags
